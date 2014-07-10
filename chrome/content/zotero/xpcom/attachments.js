@@ -427,7 +427,8 @@ Zotero.Attachments = new function(){
 		
 		//If the url is unrecognised, prompt the user to check the address and resubmit
 		if (!matches) {
-						
+			//Zotero.debug("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()"); 	
+		
 			var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                         .getService(Components.interfaces.nsIPromptService);
 
@@ -439,9 +440,18 @@ Zotero.Attachments = new function(){
 			
 			if (!resubmit || !userInput.value) return false;
 			
-			Zotero.Attachments.linkFromURL(userInput.value, sourceItemID);
-			
-		}
+			else if (!urlRe.exec(userInput.value)) {
+				var finalAlert = prompts.alert(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'))
+				throw ("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()");
+			}
+			else if (urlRe.exec(userInput.value)) {
+				//Zotero.Attachments.linkFromURL(userInput.value, sourceItemID);
+				url = userInput.value;
+			}
+			//Zotero.Attachments.linkFromURL(userInput.value, sourceItemID);
+		
+		}	
+		
 		// if url is a web address that lacks http://, add it to the url 
 		var urlWWW = /^www\.[^\s]*$/;
 		var checkWWW = urlWWW.exec(url)
