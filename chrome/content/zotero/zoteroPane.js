@@ -3032,19 +3032,40 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
-		var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+		var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 					.getService(Components.interfaces.nsIPromptService);
 		
 		var input = {};
-		var check = {value : false};
-		
-		// TODO: Allow title to be specified?
-		var result = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'),
+				
+		var result = prompts.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'),
 			Zotero.getString('pane.items.attach.link.uri'), input, "", {});
-		if (!result || !input.value) return false;
 		
-		// Create a new attachment
-		Zotero.Attachments.linkFromURL(input.value, itemID);
+		//Ensure the user input is a valid link
+		var urlRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:|www\.)[^\s]*$/;
+		var matches = urlRe.exec(input.value);		
+		
+		if (!result || !input.value) return false;
+		else if (!matches) {
+			//Alert the user of an invalid link and provide the option of correcting the it
+			var secondInput = {value : input.value};
+			var resubmit = prompts.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'), 
+				secondInput, null, {});
+			
+			if (!resubmit || !secondInput.value) return false;
+			//If the second submission is still unrecognized, let the user know and end the input process
+			else if (!urlRe.exec(secondInput.value)) {
+				var finalAlert = prompts.alert(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'))
+				throw ("Invalid URL '" + secondInput + "' in Zotero.Attachments.linkFromURL()");
+			}
+			
+			else if (urlRe.exec(secondInput.value)) {
+				Zotero.Attachments.linkFromURL(secondInput.value, itemID);
+			}
+					
+		}	
+		else if (matches) {
+			Zotero.Attachments.linkFromURL(input.value, itemID);
+		}
 	}
 	
 	

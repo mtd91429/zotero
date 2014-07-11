@@ -421,41 +421,16 @@ Zotero.Attachments = new function(){
 		   Kindle (kindle://) 
 		   Logos (logosres:) 
 		   Zotero (zotero://) */
-
-		var urlRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:|www\.)[^\s]*$/;
+		
+		var urlRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/;
 		var matches = urlRe.exec(url);
 		
 		//If the url is unrecognised, prompt the user to check the address and resubmit
 		if (!matches) {
-				
-			var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                        .getService(Components.interfaces.nsIPromptService);
-
-			var userInput = {value: url};
-			var check = {value : true};
-			
-			var resubmit = prompts.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'), 
-				userInput, "", {});
-			
-			if (!resubmit || !userInput.value) return false;
-			
-			else if (!urlRe.exec(userInput.value)) {
-				var finalAlert = prompts.alert(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'))
-				throw ("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()");
-			}
-			else if (urlRe.exec(userInput.value)) {
-				url = userInput.value;
-			}
-					
+			throw ("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()");
 		}	
 		
-		// if url is a web address that lacks http://, add it to the url 
-		var urlWWW = /^www\.[^\s]*$/;
-		var checkWWW = urlWWW.exec(url)
-		if (checkWWW) {
-			url = 'http://' + url
-		}
-		
+
 		// If no title provided, figure it out from the URL
 		if (!title){
 			title = url.substring(url.lastIndexOf('/')+1);
