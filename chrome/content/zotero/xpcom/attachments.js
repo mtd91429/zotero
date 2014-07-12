@@ -34,6 +34,7 @@ Zotero.Attachments = new function(){
 	this.linkFromFile = linkFromFile;
 	this.importSnapshotFromFile = importSnapshotFromFile;
 	this.importFromURL = importFromURL;
+	this.cleanAttachmentURI = cleanAttachmentURI;
 	this.linkFromURL = linkFromURL;
 	this.linkFromDocument = linkFromDocument;
 	this.importFromDocument = importFromDocument;
@@ -396,6 +397,28 @@ Zotero.Attachments = new function(){
 				process(mimeType, hasNativeHandler);
 			}, cookieSandbox);
 		}
+	}
+	
+	
+	function cleanAttachmentURI(uri){
+		Zotero.debug('Cleaning attachment URI');
+		
+		uri = uri.trim();
+		
+		// If input doesn't appear to have a protocol and has at least a string of 
+		// alphanumeric characters separated by a decimal, assume it to be a web address 
+		// and append http:// to the beginning
+		var urlRe = /^(?!(https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)(\w+\.\w+.+)/i;		
+		if (urlRe.exec(uri)) {
+			uri = "http://" + uri;
+		}
+
+		//Ensure the input is of a protocol recognized by Zotero
+		var protocolRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/i;
+		var matches = protocolRe.exec(uri);
+		
+		if (!matches) return false;
+		else if (matches) return uri;
 	}
 	
 	

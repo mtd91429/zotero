@@ -3034,7 +3034,6 @@ var ZoteroPane = new function()
 		}
 		var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 					.getService(Components.interfaces.nsIPromptService);
-		
 		var input = {};
 
 		// TODO: Allow title to be specified?
@@ -3042,43 +3041,19 @@ var ZoteroPane = new function()
 		var result = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'),
 			Zotero.getString('pane.items.attach.link.uri'), input, "", {});
 		
-		input.value = input.value.trim()
+		var cleanURI = Zotero.Attachments.cleanAttachmentURI(input.value);
 		
-		// If input doesn't appear to have a protocol and has at least a string of 
-		// alphanumeric characters separated by a decimal, assume it to be a web address 
-		// and append http:// to the beginning
-		var urlRe = /^(?!(https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)(\w+\.\w+.+)/;		
-		if (urlRe.exec(input.value)) {
-			input.value = "http://" + input.value;
-		}
-		
-		//Ensure the input is of a protocol recognized by Zotero
-		var protocolRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/;
-		var matches = protocolRe.exec(input.value);
-
-		if (!result || !input.value) return false;
-		else if (!matches) {
-			
+		if (!result || !input.value.trim()) return false;
+		while (!cleanURI) {
 			//Alert the user of an invalid link and provide the option of correcting it
 			var secondInput = {value : input.value};
 			var resubmit = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'), 
 				secondInput, null, {});
 			
-			if (!resubmit || !secondInput.value) return false;
-			
-			//If the second submission is still unrecognized, let the user know and end the input process
-			else if (!protocolRe.exec(secondInput.value)) {
-				var finalAlert = ps.alert(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'))
-				throw ("Invalid URL '" + secondInput + "' in Zotero.Attachments.linkFromURL()");
-			}
-			//If the second input is recognized, proceed with the attachment process
-			else if (protocolRe.exec(secondInput.value)) {
-				Zotero.Attachments.linkFromURL(secondInput.value, itemID);
-			}
+			if (!resubmit || !secondInput.value.trim()) return false;
+			cleanURI = Zotero.Attachments.cleanAttachmentURI(secondInput.value);
 		}	
-		else if (matches) {
-			Zotero.Attachments.linkFromURL(input.value, itemID);
-		}
+		Zotero.Attachments.linkFromURL(cleanURI, itemID);
 	}
 	
 	
