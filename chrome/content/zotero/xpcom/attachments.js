@@ -425,7 +425,6 @@ Zotero.Attachments = new function(){
 		var urlRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/;
 		var matches = urlRe.exec(url);
 		
-		//If the url is unrecognised, prompt the user to check the address and resubmit
 		if (!matches) {
 			throw ("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()");
 		}	
