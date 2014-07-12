@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/zotero.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
+
+<dialog
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	onload="Zotero_attachLink.onLoad();"
+	id="zotero-attach-uri-dialog"
+	title="&zotero.items.menu.attach.link.uri;"
+	orient="vertical"
+	onkeypress="if(event.keyCode === KeyEvent.DOM_VK_ESCAPE) Zotero_attachLink.cancel();"
+	buttons="accept,cancel"
+	buttonlabelcanel="&zotero.general.cancel;"
+	buttonlabelaccept="&zotero.general.ok;"
+	ondialogaccept="return 
+	
+	<script src="include.js"/>
+	<script src="attachLink.js"/>
+
+	<vbox id="zotero-attach-uri-container" style="padding:10px" align="center" flex="1">
+		<hbox>
+		<textbox id="zotero-attach-uri-input"/>
+		<description id="zotero-attach-uri-prompt">&zotero.items.menu.attach.link.uri;</description>
+		</hbox>
+		<hbox>
+			<button label="&zotero.general.ok;" default="true" oncommand="Zotero_attachLink.submit();" />
+			<button label="&zotero.general.cancel;" oncommand="Zotero_attachLink.cancel();" />
+		</hbox>
+	</vbox>
+</window>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</vbox>
