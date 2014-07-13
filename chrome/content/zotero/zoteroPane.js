@@ -3032,6 +3032,10 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
+		
+		var io = { itemID: itemID };
+		window.openDialog('chrome://zotero/content/attachLink.xul', 'zotero-attach-uri-dialog', 'centerscreen', io);
+		/*
 		var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
 					.getService(Components.interfaces.nsIPromptService);
 		var input = {};
@@ -3054,6 +3058,7 @@ var ZoteroPane = new function()
 			cleanURI = Zotero.Attachments.cleanAttachmentURI(secondInput.value);
 		}	
 		Zotero.Attachments.linkFromURL(cleanURI, itemID);
+		*/
 	}
 	
 	

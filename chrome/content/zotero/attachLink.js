@@ -22,3 +22,18 @@
     
     ***** END LICENSE BLOCK *****
 */
+
+var Zotero_attachLink = new function() {
+	
+	this.onLoad = function() {
+		document.getElementById('zotero-attach-uri-input').focus();
+	}
+	
+	this.submit = function() {
+		window.close();
+	}
+	
+	this.cancel = function() {
+		window.close();
+	}
+}

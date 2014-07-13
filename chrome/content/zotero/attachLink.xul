@@ -4,45 +4,34 @@
 
 <!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
 
-<dialog
+<window
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	onload="Zotero_attachLink.onLoad();"
 	id="zotero-attach-uri-dialog"
-	title="&zotero.items.menu.attach.link.uri;"
-	orient="vertical"
-	onkeypress="if(event.keyCode === KeyEvent.DOM_VK_ESCAPE) Zotero_attachLink.cancel();"
-	buttons="accept,cancel"
-	buttonlabelcanel="&zotero.general.cancel;"
-	buttonlabelaccept="&zotero.general.ok;"
-	ondialogaccept="return 
-	
+	title="Attach Link to URI"
+
+	onkeypress="if(event.keyCode === KeyEvent.DOM_VK_ESCAPE) Zotero_attachLink.cancel();">
 	<script src="include.js"/>
 	<script src="attachLink.js"/>
-
-	<vbox id="zotero-attach-uri-container" style="padding:10px" align="center" flex="1">
-		<hbox>
-		<textbox id="zotero-attach-uri-input"/>
-		<description id="zotero-attach-uri-prompt">&zotero.items.menu.attach.link.uri;</description>
+	
+	<vbox id="zotero-attach-uri-container" pack="center" flex="1">
+		<hbox pack="center">
+		<label id="zotero-attach-uri-body">Message</label>
 		</hbox>
-		<hbox>
+		<hbox pack="center">
+			<vbox pack="center">
+				<label id="zotero-attach-uri-label-input">Link:</label>
+				<label id="zotero-attach-uri-label-title">Title:</label>
+			</vbox>
+			<vbox pack="center">
+				<textbox id="zotero-attach-uri-input"
+					onkeypress="if(event.keyCode === KeyEvent.DOM_VK_RETURN) Zotero_attachLink.submit();"/>
+				<textbox id="zotero-attach-uri-title" placeholder="Optional"/>
+			</vbox>
+		</hbox>
+		<hbox pack="center">
 			<button label="&zotero.general.ok;" default="true" oncommand="Zotero_attachLink.submit();" />
 			<button label="&zotero.general.cancel;" oncommand="Zotero_attachLink.cancel();" />
 		</hbox>
 	</vbox>
 </window>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	</vbox>
