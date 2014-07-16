@@ -3043,12 +3043,13 @@ var ZoteroPane = new function()
 		
 		var cleanURI = Zotero.Attachments.cleanAttachmentURI(input.value);
 		
-		if (!result || !input.value.trim()) return false;
+		if (!result || cleanURI) return false;
+		
 		while (!cleanURI) {
-			//Alert the user of an invalid link and provide the option of correcting it
+			// Alert the user of an invalid link and provide the option of correcting it
 			var secondInput = {value : input.value};
-			var resubmit = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'), 
-				secondInput, null, {});
+			var resubmit = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), 
+				Zotero.getString('pane.items.attach.link.uri.unrecognized'), secondInput, null, {});
 			
 			if (!resubmit || !secondInput.value.trim()) return false;
 			cleanURI = Zotero.Attachments.cleanAttachmentURI(secondInput.value);
