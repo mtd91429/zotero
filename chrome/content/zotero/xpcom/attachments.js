@@ -413,7 +413,7 @@ Zotero.Attachments = new function(){
 		
 		// If input has a protocol defined by the presence of a colon preceded and followed
 		// by a string of alphanumeric characters or hyphen, return the input		
-		var hasProtocol = /^(\w+|-)+:\/*(\w|-)+\.\w+.+/i;
+		var hasProtocol = /^(\w+|-)+:\/*.+/i;
 		if (!hasProtocol.exec(uri)) {
 			return false;
 		}

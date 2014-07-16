@@ -3043,7 +3043,9 @@ var ZoteroPane = new function()
 		
 		var cleanURI = Zotero.Attachments.cleanAttachmentURI(input.value);
 		
-		if (!result || cleanURI) return false;
+		input.value = input.value.trim();
+		
+		if (!result || !input.value) return false;
 		
 		while (!cleanURI) {
 			// Alert the user of an invalid link and provide the option of correcting it
