@@ -400,24 +400,24 @@ Zotero.Attachments = new function(){
 	
 	
 	this.cleanAttachmentURI = function (uri) {
-				
 		uri = uri.trim();
-		
-		// If input doesn't appear to have a protocol and has at least a string of 
-		// alphanumeric characters or hyphen separated by a decimal, assume it to be  
-		// a web address and append http:// to the beginning
-		var noProtocol = /^(?!((\w+|-)+:)\/*)(\w|-)+\.\w+.+/i;		
-		if (noProtocol.exec(uri)) {
-			uri = "http://" + uri;
-		}
-		
-		// If input has a protocol defined by the presence of a colon preceded and followed
-		// by a string of alphanumeric characters or hyphen, return the input		
-		var hasProtocol = /^(\w+|-)+:\/*.+/i;
-		if (!hasProtocol.exec(uri)) {
-			return false;
-		}
-		else return uri;
+		var ios = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+		try {
+			return ios.newURI(uri, null, null).spec // Valid URI if succeeds
+		} catch (e) {
+			if (e instanceof Components.Exception
+			  && e.result == Components.results.NS_ERROR_MALFORMED_URI
+			  ) {
+				// Assume it's a URL missing "http://" part
+				try {
+					return ios.newURI('http://' + uri, null, null).spec;
+				} catch (e) {
+					}
+				}
+	      }
+	Zotero.debug('Invalid URI : <' + uri + '>');
+	return false;
 	}
 	
 	
@@ -429,12 +429,14 @@ Zotero.Attachments = new function(){
 	 * @param	{String}		[mimeType]		MIME type of page
 	 * @param	{String}		[title]			Title to use for attachment
 	 */
-	function linkFromURL(url, sourceItemID, mimeType, title){
-		Zotero.debug('Linking attachment from URL');		
-
+	function linkFromURL(url, sourceItemID, mimeType, title, ){
+		Zotero.debug('Linking attachment from <' + url + '>');		
+		
 		// If no title provided, figure it out from the URL
-		if (!title){
-			title = url.substring(url.lastIndexOf('/')+1);
+		if (!title) {
+			var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+			title = ioService.newURI(url, null, null).host;
 		}
 		
 		// Override MIME type to application/pdf if extension is .pdf --
