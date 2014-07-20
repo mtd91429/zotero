@@ -429,14 +429,15 @@ Zotero.Attachments = new function(){
 	 * @param	{String}		[mimeType]		MIME type of page
 	 * @param	{String}		[title]			Title to use for attachment
 	 */
-	function linkFromURL(url, sourceItemID, mimeType, title, ){
+	function linkFromURL (url, sourceItemID, mimeType, title) {
 		Zotero.debug('Linking attachment from <' + url + '>');		
 		
 		// If no title provided, figure it out from the URL
 		if (!title) {
-			var ioService = Components.classes["@mozilla.org/network/io-service;1"]
-                .getService(Components.interfaces.nsIIOService);
-			title = ioService.newURI(url, null, null).host;
+			if (url.lastIndexOf('/') + 1 == url.length) {
+				url = url.slice(0, -1);
+			}
+			title = url.substring(url.lastIndexOf('/') + 1);
 		}
 		
 		// Override MIME type to application/pdf if extension is .pdf --
