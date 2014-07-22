@@ -9,23 +9,28 @@
 	onload="Zotero_attachLink.onLoad();"
 	id="zotero-attach-uri-dialog"
 	title="Attach Link to URI"
-
-	onkeypress="if(event.keyCode === KeyEvent.DOM_VK_ESCAPE) Zotero_attachLink.cancel();">
+	flex="1">
+	
 	<script src="include.js"/>
 	<script src="attachLink.js"/>
 	
-	<vbox id="zotero-attach-uri-container" pack="center" flex="1">
-		<hbox pack="center">
-		<label id="zotero-attach-uri-body">Message</label>
+	<vbox id="zotero-attach-uri-container" pack="stretch" style="min-width: 15em;" flex="1">
+	<keyset>
+		<key id="submit" keycode="VK_RETURN" oncommand="Zotero_attachLink.submit();"/>
+		<key id="cancel" keycode="VK_ESCAPE" oncommand="Zotero_attachLink.cancel();"/>
+	</keyset>
+		<hbox pack="stretch" flex="1">
+			<label id="zotero-attach-uri-default-message" hidden="false">&zotero.attachLink.message.default;</label>
+			<label id="zotero-attach-uri-file-message" hidden="true">&zotero.attachLink.message.file;</label>
+			<label id="zotero-attach-uri-unrecognized-message" hidden="true">&zotero.attachLink.message.unrecognized;</label>
 		</hbox>
 		<hbox pack="center">
 			<vbox pack="center">
-				<label id="zotero-attach-uri-label-input">Link:</label>
-				<label id="zotero-attach-uri-label-title">Title:</label>
+				<label id="zotero-attach-uri-label-input" value="Link:"></label>
+				<label id="zotero-attach-uri-label-title" value="Title:"></label>
 			</vbox>
-			<vbox pack="center">
-				<textbox id="zotero-attach-uri-input"
-					onkeypress="if(event.keyCode === KeyEvent.DOM_VK_RETURN) Zotero_attachLink.submit();"/>
+			<vbox pack="center" flex="1">
+				<textbox id="zotero-attach-uri-input"/>
 				<textbox id="zotero-attach-uri-title" placeholder="Optional"/>
 			</vbox>
 		</hbox>

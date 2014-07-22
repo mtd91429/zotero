@@ -30,7 +30,30 @@ var Zotero_attachLink = new function() {
 	}
 	
 	this.submit = function() {
-		window.close();
+		
+		var link = document.getElementById('zotero-attach-uri-input').value;
+		var title = document.getElementById('zotero-attach-uri-title').value;
+		var defaultMessage = document.getElementById('zotero-attach-uri-default-message');
+		var fileMessage = document.getElementById('zotero-attach-uri-file-message');
+		var unrecognizedMessage = document.getElementById('zotero-attach-uri-unrecognized-message');
+		var itemID = window.arguments[0].itemID;
+		var cleanURI = Zotero.Attachments.cleanAttachmentURI(link);
+		if (!link.trim()) {
+				window.close();
+			}
+		// Don't allow "file:" links, because using "Attach link to file" is the right way
+		if (cleanURI.toLowerCase().indexOf('file:') == 0) {
+			defaultMessage.setAttribute("hidden", "true");
+			fileMessage.setAttribute("hidden", "false");
+		}
+		else if (!cleanURI) {
+			defaultMessage.setAttribute("hidden", "true");
+			unrecognizedMessage.setAttribute("hidden", "false");
+		}
+		else if (cleanURI) {
+			Zotero.Attachments.linkFromURL(cleanURI, itemID, null, title);	  
+			window.close();
+		}
 	}
 	
 	this.cancel = function() {

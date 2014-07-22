@@ -34,7 +34,6 @@ Zotero.Attachments = new function(){
 	this.linkFromFile = linkFromFile;
 	this.importSnapshotFromFile = importSnapshotFromFile;
 	this.importFromURL = importFromURL;
-	this.cleanAttachmentURI = cleanAttachmentURI;
 	this.linkFromURL = linkFromURL;
 	this.linkFromDocument = linkFromDocument;
 	this.importFromDocument = importFromDocument;
@@ -400,25 +399,25 @@ Zotero.Attachments = new function(){
 	}
 	
 	
-	function cleanAttachmentURI(uri){
-		Zotero.debug('Cleaning attachment URI');
-		
+	this.cleanAttachmentURI = function (uri) {
 		uri = uri.trim();
-		
-		// If input doesn't appear to have a protocol and has at least a string of 
-		// alphanumeric characters separated by a decimal, assume it to be a web address 
-		// and append http:// to the beginning
-		var urlRe = /^(?!(https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)(\w+\.\w+.+)/i;		
-		if (urlRe.exec(uri)) {
-			uri = "http://" + uri;
-		}
-
-		//Ensure the input is of a protocol recognized by Zotero
-		var protocolRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/i;
-		var matches = protocolRe.exec(uri);
-		
-		if (!matches) return false;
-		else if (matches) return uri;
+		var ios = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+		try {
+			return ios.newURI(uri, null, null).spec // Valid URI if succeeds
+		} catch (e) {
+			if (e instanceof Components.Exception
+			  && e.result == Components.results.NS_ERROR_MALFORMED_URI
+			  ) {
+				// Assume it's a URL missing "http://" part
+				try {
+					return ios.newURI('http://' + uri, null, null).spec;
+				} catch (e) {
+					Zotero.debug('Invalid URI : <' + uri + '>');
+					return false;
+				  }
+				}
+	      }
 	}
 	
 	
@@ -431,30 +430,13 @@ Zotero.Attachments = new function(){
 	 * @param	{String}		[title]			Title to use for attachment
 	 */
 	function linkFromURL(url, sourceItemID, mimeType, title){
-		Zotero.debug('Linking attachment from URL');
-	    
-		/* Throw error on invalid URLs
-		   We currently accept the following protocols:
-		   PersonalBrain (brain://)
-		   DevonThink (x-devonthink-item://)
-		   Notational Velocity (nv://)
-		   MyLife Organized (mlo://)
-		   Evernote (evernote://)
-		   OneNote (onenote://)
-		   Kindle (kindle://) 
-		   Logos (logosres:) 
-		   Zotero (zotero://) */
-		
-		var urlRe = /^((https?|zotero|evernote|onenote|brain|nv|mlo|kindle|x-devonthink-item|ftp):\/\/|logosres:)[^\s]*$/;
-		var matches = urlRe.exec(url);
-		
-		if (!matches) {
-			throw ("Invalid URL '" + url + "' in Zotero.Attachments.linkFromURL()");
-		}	
-		
+		Zotero.debug('Linking attachment from URL');		
 
 		// If no title provided, figure it out from the URL
 		if (!title){
+			if (url.lastIndexOf('/') + 1 == url.length) {
+				url = url.slice(0, -1);
+			}	
 			title = url.substring(url.lastIndexOf('/')+1);
 		}
 		

@@ -3032,33 +3032,8 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
-		
 		var io = { itemID: itemID };
-		window.openDialog('chrome://zotero/content/attachLink.xul', 'zotero-attach-uri-dialog', 'centerscreen', io);
-		/*
-		var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-					.getService(Components.interfaces.nsIPromptService);
-		var input = {};
-
-		// TODO: Allow title to be specified?
-		
-		var result = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'),
-			Zotero.getString('pane.items.attach.link.uri'), input, "", {});
-		
-		var cleanURI = Zotero.Attachments.cleanAttachmentURI(input.value);
-		
-		if (!result || !input.value.trim()) return false;
-		while (!cleanURI) {
-			//Alert the user of an invalid link and provide the option of correcting it
-			var secondInput = {value : input.value};
-			var resubmit = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'), Zotero.getString('pane.items.attach.link.uri.unrecognized'), 
-				secondInput, null, {});
-			
-			if (!resubmit || !secondInput.value.trim()) return false;
-			cleanURI = Zotero.Attachments.cleanAttachmentURI(secondInput.value);
-		}	
-		Zotero.Attachments.linkFromURL(cleanURI, itemID);
-		*/
+		window.openDialog('chrome://zotero/content/attachLink.xul', 'zotero-attach-uri-dialog', 'centerscreen, resizable', io);
 	}
 	
 	
