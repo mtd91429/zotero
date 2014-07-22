@@ -3032,28 +3032,9 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
-		var ps = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-					.getService(Components.interfaces.nsIPromptService);
-		var cleanURI, input = {};
-		
-		// TODO: Allow title to be specified?
-		do {
-			var result = ps.prompt(null, Zotero.getString('pane.items.attach.link.uri.title'),
-			  Zotero.getString('pane.items.attach.link.uri'), input, null, {});
-			if (!result || !input.value.trim()) {
-				return;
+		var io = { itemID: itemID };
+		window.openDialog('chrome://zotero/content/attachLink.xul', 'zotero-attach-uri-dialog', 'centerscreen, resizable', io);
 			}
-			var cleanURI = Zotero.Attachments.cleanAttachmentURI(input.value);
-			// Don't allow "file:" links, because using "Attach link to file" is the right way
-			// TODO: Show different message?
-			if (cleanURI.toLowerCase().indexOf('file:') == 0) cleanURI = false;
-			if (!cleanURI) {
-				ps.alert(null, Zotero.getString('pane.items.attach.link.uri.title'), 
-				  Zotero.getString('pane.items.attach.link.uri.unrecognized'), input, null, {});
-			}
-		} while (!cleanURI);
-		Zotero.Attachments.linkFromURL(cleanURI, itemID);	  
-	}
 	
 	
 	function addAttachmentFromDialog(link, id)

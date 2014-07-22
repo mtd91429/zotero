@@ -413,11 +413,11 @@ Zotero.Attachments = new function(){
 				try {
 					return ios.newURI('http://' + uri, null, null).spec;
 				} catch (e) {
-					}
+					Zotero.debug('Invalid URI : <' + uri + '>');
+					return false;
+				  }
 				}
 	      }
-	Zotero.debug('Invalid URI : <' + uri + '>');
-	return false;
 	}
 	
 	

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/zotero.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
+
+<window
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	onload="Zotero_attachLink.onLoad();"
+	id="zotero-attach-uri-dialog"
+	title="Attach Link to URI"
+	flex="1">
+	
+	<script src="include.js"/>
+	<script src="attachLink.js"/>
+	
+	<vbox id="zotero-attach-uri-container" pack="stretch" style="min-width: 15em;" flex="1">
+	<keyset>
+		<key id="submit" keycode="VK_RETURN" oncommand="Zotero_attachLink.submit();"/>
+		<key id="cancel" keycode="VK_ESCAPE" oncommand="Zotero_attachLink.cancel();"/>
+	</keyset>
+		<hbox pack="stretch" flex="1">
+			<label id="zotero-attach-uri-default-message" hidden="false">&zotero.attachLink.message.default;</label>
+			<label id="zotero-attach-uri-file-message" hidden="true">&zotero.attachLink.message.file;</label>
+			<label id="zotero-attach-uri-unrecognized-message" hidden="true">&zotero.attachLink.message.unrecognized;</label>
+		</hbox>
+		<hbox pack="center">
+			<vbox pack="center">
+				<label id="zotero-attach-uri-label-input" value="Link:"></label>
+				<label id="zotero-attach-uri-label-title" value="Title:"></label>
+			</vbox>
+			<vbox pack="center" flex="1">
+				<textbox id="zotero-attach-uri-input"/>
+				<textbox id="zotero-attach-uri-title" placeholder="Optional"/>
+			</vbox>
+		</hbox>
+		<hbox pack="center">
+			<button label="&zotero.general.ok;" default="true" oncommand="Zotero_attachLink.submit();" />
+			<button label="&zotero.general.cancel;" oncommand="Zotero_attachLink.cancel();" />
+		</hbox>
+	</vbox>
+</window>
