@@ -3032,9 +3032,17 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
-		var io = { itemID: itemID };
-		window.openDialog('chrome://zotero/content/attachLink.xul', 'zotero-attach-uri-dialog', 'centerscreen, resizable', io);
-			}
+		//Get the string "Attach Link to File…" from zotero.dtd to pass into the new dialog
+		var linkFileMenuElement = document.getElementsByClassName("menuitem-iconic zotero-menuitem-attachments-link");
+		var message = {linkFileMessage: linkFileMenuElement[0].getAttribute("label")};
+
+		var io = { inn:{itemID: itemID}, out: null };
+		window.openDialog('chrome://zotero/content/attachLink.xul', 
+			'zotero-attach-uri-dialog', 'centerscreen, modal', io, message);
+		if (io.out) {
+			Zotero.Attachments.linkFromURL(io.out.link, itemID, null, io.out.title);
+		}
+	}
 	
 	
 	function addAttachmentFromDialog(link, id)

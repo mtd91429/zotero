@@ -1,7 +1,7 @@
 /*
     ***** BEGIN LICENSE BLOCK *****
     
-    Copyright © 2009 Center for History and New Media
+    Copyright © 2014 Center for History and New Media
                      George Mason University, Fairfax, Virginia, USA
                      http://zotero.org
     
@@ -23,40 +23,46 @@
     ***** END LICENSE BLOCK *****
 */
 
-var Zotero_attachLink = new function() {
-	
-	this.onLoad = function() {
-		document.getElementById('zotero-attach-uri-input').focus();
+var Zotero_AttachLink = new function() {
+	this.onLoad = onLoad;
+	this.submit = submit;
+	this.cancel = cancel;
+
+	function onLoad() {
 	}
 	
-	this.submit = function() {
+	function submit () {
 		
 		var link = document.getElementById('zotero-attach-uri-input').value;
 		var title = document.getElementById('zotero-attach-uri-title').value;
-		var defaultMessage = document.getElementById('zotero-attach-uri-default-message');
-		var fileMessage = document.getElementById('zotero-attach-uri-file-message');
-		var unrecognizedMessage = document.getElementById('zotero-attach-uri-unrecognized-message');
+		var stringsBundle = document.getElementById("string-bundle");
+		var message = document.getElementById('zotero-attach-uri-message');
 		var itemID = window.arguments[0].itemID;
+		var linkFileMessage = window.arguments[1].linkFileMessage;
 		var cleanURI = Zotero.Attachments.cleanAttachmentURI(link);
-		if (!link.trim()) {
-				window.close();
-			}
+
+		if (!cleanURI) {
+			message.textContent = stringsBundle.getString('pane.items.attach.link.uri.unrecognized');
+			window.sizeToContent();
+			window.centerWindowOnScreen();
+			document.getElementById('zotero-attach-uri-input').select();
+			return false;
+		}
 		// Don't allow "file:" links, because using "Attach link to file" is the right way
-		if (cleanURI.toLowerCase().indexOf('file:') == 0) {
-			defaultMessage.setAttribute("hidden", "true");
-			fileMessage.setAttribute("hidden", "false");
+		else if (cleanURI.toLowerCase().indexOf('file:') == 0) {
+			message.textContent = stringsBundle.getString('pane.items.attach.link.uri.file') + " \"" + linkFileMessage + "\"";
+			window.sizeToContent();
+			window.centerWindowOnScreen();
+			document.getElementById('zotero-attach-uri-input').select();
+			return false;
 		}
-		else if (!cleanURI) {
-			defaultMessage.setAttribute("hidden", "true");
-			unrecognizedMessage.setAttribute("hidden", "false");
-		}
-		else if (cleanURI) {
-			Zotero.Attachments.linkFromURL(cleanURI, itemID, null, title);	  
-			window.close();
+		else {
+			window.arguments[0].out = {link:document.getElementById('zotero-attach-uri-input').value,
+			title:document.getElementById('zotero-attach-uri-title').value};
+			return true;
 		}
 	}
-	
-	this.cancel = function() {
-		window.close();
+
+	function cancel() {
 	}
 }

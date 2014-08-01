@@ -402,22 +402,25 @@ Zotero.Attachments = new function(){
 	this.cleanAttachmentURI = function (uri) {
 		uri = uri.trim();
 		var ios = Components.classes["@mozilla.org/network/io-service;1"]
-                .getService(Components.interfaces.nsIIOService);
-		try {
-			return ios.newURI(uri, null, null).spec // Valid URI if succeeds
-		} catch (e) {
-			if (e instanceof Components.Exception
-			  && e.result == Components.results.NS_ERROR_MALFORMED_URI
-			  ) {
-				// Assume it's a URL missing "http://" part
-				try {
-					return ios.newURI('http://' + uri, null, null).spec;
-				} catch (e) {
-					Zotero.debug('Invalid URI : <' + uri + '>');
-					return false;
-				  }
-				}
-	      }
+			.getService(Components.interfaces.nsIIOService);
+		if (!uri.trim()) return false;
+		else {
+			try {
+				return ios.newURI(uri, null, null).spec // Valid URI if succeeds
+			} catch (e) {
+				if (e instanceof Components.Exception
+					&& e.result == Components.results.NS_ERROR_MALFORMED_URI
+					) {
+					// Assume it's a URL missing "http://" part
+					try {
+						return ios.newURI('http://' + uri, null, null).spec;
+					} catch (e) {
+						Zotero.debug('Invalid URI: ' + uri, 2);
+						return false;
+					}
+					}
+			}
+		}
 	}
 	
 	

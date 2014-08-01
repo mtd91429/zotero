@@ -4,39 +4,34 @@
 
 <!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
 
-<window
+<dialog
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	onload="Zotero_attachLink.onLoad();"
+	buttons="accept,cancel"
+	ondialogaccept="return Zotero_AttachLink.submit();"
+	ondialogcancel="return Zotero_AttachLink.cancel();"
+	onload="Zotero_AttachLink.onLoad()"
 	id="zotero-attach-uri-dialog"
-	title="Attach Link to URI"
-	flex="1">
+	title="&zotero.attachLink.title;"
+	>
 	
 	<script src="include.js"/>
-	<script src="attachLink.js"/>
+	<script src="AttachLink.js"/>
 	
-	<vbox id="zotero-attach-uri-container" pack="stretch" style="min-width: 15em;" flex="1">
-	<keyset>
-		<key id="submit" keycode="VK_RETURN" oncommand="Zotero_attachLink.submit();"/>
-		<key id="cancel" keycode="VK_ESCAPE" oncommand="Zotero_attachLink.cancel();"/>
-	</keyset>
-		<hbox pack="stretch" flex="1">
-			<label id="zotero-attach-uri-default-message" hidden="false">&zotero.attachLink.message.default;</label>
-			<label id="zotero-attach-uri-file-message" hidden="true">&zotero.attachLink.message.file;</label>
-			<label id="zotero-attach-uri-unrecognized-message" hidden="true">&zotero.attachLink.message.unrecognized;</label>
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="string-bundle" src="chrome://zotero/locale/zotero.properties"/>
+	</stringbundleset>
+	
+	<vbox id="zotero-attach-uri-container" pack="center">
+		<hbox pack="center" flex="1">
+			<description id="zotero-attach-uri-message"></description>
 		</hbox>
-		<hbox pack="center">
-			<vbox pack="center">
-				<label id="zotero-attach-uri-label-input" value="Link:"></label>
-				<label id="zotero-attach-uri-label-title" value="Title:"></label>
-			</vbox>
-			<vbox pack="center" flex="1">
-				<textbox id="zotero-attach-uri-input"/>
-				<textbox id="zotero-attach-uri-title" placeholder="Optional"/>
-			</vbox>
+		<hbox pack="center" flex="1">
+			<label id="zotero-attach-uri-label-input" value="&zotero.attachLink.label.link;" control="zotero-attach-uri-input"></label>
+			<textbox id="zotero-attach-uri-input" flex="1"/>
 		</hbox>
-		<hbox pack="center">
-			<button label="&zotero.general.ok;" default="true" oncommand="Zotero_attachLink.submit();" />
-			<button label="&zotero.general.cancel;" oncommand="Zotero_attachLink.cancel();" />
+		<hbox pack="center" flex="1">
+			<label id="zotero-attach-uri-label-title" value="&zotero.attachLink.label.title;" control="zotero-attach-uri-title"></label>
+			<textbox id="zotero-attach-uri-title" flex="1" placeholder="&zotero.general.optional;"/>
 		</hbox>
 	</vbox>
-</window>
+</dialog>
