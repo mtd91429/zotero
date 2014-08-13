@@ -434,13 +434,26 @@ Zotero.Attachments = new function(){
 	 */
 	function linkFromURL (url, sourceItemID, mimeType, title) {
 		Zotero.debug('Linking attachment from <' + url + '>');		
+		//clean the URL to ensure translator-passed links work
+		var url = Zotero.Attachments.cleanAttachmentURI(url);
 		
 		// If no title provided, figure it out from the URL
+		// Web addresses with paths will be whittled to the last element
+		// excluding references and queries. All others are the full string
 		if (!title) {
-			if (url.lastIndexOf('/') + 1 == url.length) {
-				url = url.slice(0, -1);
+			var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+				.getService(Components.interfaces.nsIIOService);
+			var titleURL = ioService.newURI(url, null, null).cloneIgnoringRef();
+
+			if ((titleURL.scheme == 'http'||'https') && (titleURL.path != '/')) {
+				var path = titleURL.path;
+				pathPreQuery = path.split('?');
+				pathArray = pathPreQuery[0].split('/');
+				title = !pathArray[pathArray.length - 1]
+					? pathArray[pathArray.length - 2]
+					: pathArray[pathArray.length - 1];
 			}
-			title = url.substring(url.lastIndexOf('/') + 1);
+			else title = url;
 		}
 		
 		// Override MIME type to application/pdf if extension is .pdf --
@@ -455,7 +468,6 @@ Zotero.Attachments = new function(){
 			mimeType, null, sourceItemID);
 		return itemID;
 	}
-	
 	
 	// TODO: what if called on file:// document?
 	function linkFromDocument(document, sourceItemID, parentCollectionIDs){

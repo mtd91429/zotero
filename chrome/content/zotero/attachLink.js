@@ -57,7 +57,7 @@ var Zotero_AttachLink = new function() {
 			return false;
 		}
 		else {
-			window.arguments[0].out = {link:document.getElementById('zotero-attach-uri-input').value,
+			window.arguments[0].out = {link:cleanURI,
 			title:document.getElementById('zotero-attach-uri-title').value};
 			return true;
 		}
