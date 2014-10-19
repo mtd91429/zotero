@@ -401,24 +401,22 @@ Zotero.Attachments = new function(){
 	
 	this.cleanAttachmentURI = function (uri) {
 		uri = uri.trim();
+		if (!uri) return false;
 		var ios = Components.classes["@mozilla.org/network/io-service;1"]
 			.getService(Components.interfaces.nsIIOService);
-		if (!uri.trim()) return false;
-		else {
-			try {
-				return ios.newURI(uri, null, null).spec // Valid URI if succeeds
-			} catch (e) {
-				if (e instanceof Components.Exception
-					&& e.result == Components.results.NS_ERROR_MALFORMED_URI
-					) {
-					// Assume it's a URL missing "http://" part
-					try {
-						return ios.newURI('http://' + uri, null, null).spec;
-					} catch (e) {
-						Zotero.debug('Invalid URI: ' + uri, 2);
-						return false;
-					}
-					}
+		try {
+			return ios.newURI(uri, null, null).spec // Valid URI if succeeds
+		} catch (e) {
+			if (e instanceof Components.Exception
+				&& e.result == Components.results.NS_ERROR_MALFORMED_URI
+			) {
+				// Assume it's a URL missing "http://" part
+				try {
+					return ios.newURI('http://' + uri, null, null).spec;
+				} catch (e) {
+					Zotero.debug('cleanAttachmentURI: Invalid URI: ' + uri, 2);
+					return false;
+				}
 			}
 		}
 	}
@@ -435,7 +433,7 @@ Zotero.Attachments = new function(){
 	function linkFromURL (url, sourceItemID, mimeType, title) {
 		Zotero.debug('Linking attachment from <' + url + '>');		
 		//clean the URL to ensure translator-passed links work
-		var url = Zotero.Attachments.cleanAttachmentURI(url);
+		url = Zotero.Attachments.cleanAttachmentURI(url);
 		
 		// If no title provided, figure it out from the URL
 		// Web addresses with paths will be whittled to the last element

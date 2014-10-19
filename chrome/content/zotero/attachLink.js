@@ -24,25 +24,21 @@
 */
 
 var Zotero_AttachLink = new function() {
-	this.onLoad = onLoad;
+
 	this.submit = submit;
 	this.cancel = cancel;
-
-	function onLoad() {
-	}
 	
 	function submit () {
 		
 		var link = document.getElementById('zotero-attach-uri-input').value;
 		var title = document.getElementById('zotero-attach-uri-title').value;
-		var stringsBundle = document.getElementById("string-bundle");
 		var message = document.getElementById('zotero-attach-uri-message');
-		var itemID = window.arguments[0].itemID;
+		var itemID = window.arguments[0].in.itemID;
 		var linkFileMessage = window.arguments[1].linkFileMessage;
 		var cleanURI = Zotero.Attachments.cleanAttachmentURI(link);
 
 		if (!cleanURI) {
-			message.textContent = stringsBundle.getString('pane.items.attach.link.uri.unrecognized');
+			message.textContent = Zotero.getString('pane.items.attach.link.uri.unrecognized');
 			window.sizeToContent();
 			window.centerWindowOnScreen();
 			document.getElementById('zotero-attach-uri-input').select();
@@ -50,19 +46,21 @@ var Zotero_AttachLink = new function() {
 		}
 		// Don't allow "file:" links, because using "Attach link to file" is the right way
 		else if (cleanURI.toLowerCase().indexOf('file:') == 0) {
-			message.textContent = stringsBundle.getString('pane.items.attach.link.uri.file') + " \"" + linkFileMessage + "\"";
+			message.textContent = Zotero.getString('pane.items.attach.link.uri.file', [linkFileMessage]);
 			window.sizeToContent();
 			window.centerWindowOnScreen();
 			document.getElementById('zotero-attach-uri-input').select();
 			return false;
 		}
 		else {
-			window.arguments[0].out = {link:cleanURI,
-			title:document.getElementById('zotero-attach-uri-title').value};
+			window.arguments[0].out = {
+				link:	cleanURI,
+				title:	document.getElementById('zotero-attach-uri-title').value};
 			return true;
 		}
 	}
 
 	function cancel() {
+		return true;
 	}
 }

@@ -9,17 +9,13 @@
 	buttons="accept,cancel"
 	ondialogaccept="return Zotero_AttachLink.submit();"
 	ondialogcancel="return Zotero_AttachLink.cancel();"
-	onload="Zotero_AttachLink.onLoad()"
+	
 	id="zotero-attach-uri-dialog"
 	title="&zotero.attachLink.title;"
 	>
 	
 	<script src="include.js"/>
 	<script src="AttachLink.js"/>
-	
-	<stringbundleset id="stringbundleset">
-		<stringbundle id="string-bundle" src="chrome://zotero/locale/zotero.properties"/>
-	</stringbundleset>
 	
 	<vbox id="zotero-attach-uri-container" pack="center">
 		<hbox pack="center" flex="1">

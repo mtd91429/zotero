@@ -3036,7 +3036,7 @@ var ZoteroPane = new function()
 		var linkFileMenuElement = document.getElementsByClassName("menuitem-iconic zotero-menuitem-attachments-link");
 		var message = {linkFileMessage: linkFileMenuElement[0].getAttribute("label")};
 
-		var io = { inn:{itemID: itemID}, out: null };
+		var io = { in: {itemID: itemID}, out: null};
 		window.openDialog('chrome://zotero/content/attachLink.xul', 
 			'zotero-attach-uri-dialog', 'centerscreen, modal', io, message);
 		if (io.out) {
