@@ -441,15 +441,16 @@ Zotero.Attachments = new function(){
 		if (!title) {
 			var ioService = Components.classes["@mozilla.org/network/io-service;1"]
 				.getService(Components.interfaces.nsIIOService);
-			var titleURL = ioService.newURI(url, null, null).cloneIgnoringRef();
+			var titleURL = ioService.newURI(url, null, null);
 
-			if ((titleURL.scheme == 'http'||'https') && (titleURL.path != '/')) {
-				var path = titleURL.path;
-				pathPreQuery = path.split('?');
-				pathArray = pathPreQuery[0].split('/');
-				title = !pathArray[pathArray.length - 1]
-					? pathArray[pathArray.length - 2]
-					: pathArray[pathArray.length - 1];
+			if ((titleURL.scheme == 'http' || titleURL.scheme == 'https') && (titleURL.path != '/')) {
+				titleURL = titleURL.QueryInterface(Components.interfaces.nsIURL);
+				if (titleURL.fileName) {
+					title = titleURL.fileName;
+				} else if (titleURL.directory) {
+					var dir = titleURL.directory.split('/');
+					title = dir[dir.length - 2];
+				}
 			}
 			else title = url;
 		}
