@@ -25,10 +25,7 @@
 
 var Zotero_AttachLink = new function() {
 
-	this.submit = submit;
-	this.cancel = cancel;
-	
-	function submit () {
+	this.submit = function() {
 		
 		var link = document.getElementById('zotero-attach-uri-input').value;
 		var title = document.getElementById('zotero-attach-uri-title').value;
@@ -40,7 +37,6 @@ var Zotero_AttachLink = new function() {
 		if (!cleanURI) {
 			message.textContent = Zotero.getString('pane.items.attach.link.uri.unrecognized');
 			window.sizeToContent();
-			window.centerWindowOnScreen();
 			document.getElementById('zotero-attach-uri-input').select();
 			return false;
 		}
@@ -48,7 +44,6 @@ var Zotero_AttachLink = new function() {
 		else if (cleanURI.toLowerCase().indexOf('file:') == 0) {
 			message.textContent = Zotero.getString('pane.items.attach.link.uri.file', [linkFileMessage]);
 			window.sizeToContent();
-			window.centerWindowOnScreen();
 			document.getElementById('zotero-attach-uri-input').select();
 			return false;
 		}
@@ -60,7 +55,7 @@ var Zotero_AttachLink = new function() {
 		}
 	}
 
-	function cancel() {
+	this.cancel = function() {
 		return true;
 	}
 }
