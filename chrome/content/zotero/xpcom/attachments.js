@@ -34,7 +34,6 @@ Zotero.Attachments = new function(){
 	this.linkFromFile = linkFromFile;
 	this.importSnapshotFromFile = importSnapshotFromFile;
 	this.importFromURL = importFromURL;
-	this.linkFromURL = linkFromURL;
 	this.linkFromDocument = linkFromDocument;
 	this.importFromDocument = importFromDocument;
 	this.createMissingAttachment = createMissingAttachment;
@@ -399,9 +398,10 @@ Zotero.Attachments = new function(){
 	}
 	
 	
-	this.cleanAttachmentURI = function (uri) {
+	this.cleanAttachmentURI = function (uri, tryHttp) {
 		uri = uri.trim();
 		if (!uri) return false;
+		
 		var ios = Components.classes["@mozilla.org/network/io-service;1"]
 			.getService(Components.interfaces.nsIIOService);
 		try {
@@ -410,14 +410,17 @@ Zotero.Attachments = new function(){
 			if (e instanceof Components.Exception
 				&& e.result == Components.results.NS_ERROR_MALFORMED_URI
 			) {
-				// Assume it's a URL missing "http://" part
-				try {
-					return ios.newURI('http://' + uri, null, null).spec;
-				} catch (e) {
-					Zotero.debug('cleanAttachmentURI: Invalid URI: ' + uri, 2);
-					return false;
+				if (tryHttp) {
+					// Assume it's a URL missing "http://" part
+					try {
+						return ios.newURI('http://' + uri, null, null).spec;
+					} catch (e) {}
 				}
+				
+				Zotero.debug('cleanAttachmentURI: Invalid URI: ' + uri, 2);
+				return false;
 			}
+			throw e;
 		}
 	}
 	
@@ -425,15 +428,13 @@ Zotero.Attachments = new function(){
 	/*
 	 * Create a link attachment from a URL
 	 *
-	 * @param	{String}		url
+	 * @param	{String}		url Validated URI
 	 * @param	{Integer}		sourceItemID	Parent item
 	 * @param	{String}		[mimeType]		MIME type of page
 	 * @param	{String}		[title]			Title to use for attachment
 	 */
-	function linkFromURL (url, sourceItemID, mimeType, title) {
-		Zotero.debug('Linking attachment from <' + url + '>');		
-		//clean the URL to ensure translator-passed links work
-		url = Zotero.Attachments.cleanAttachmentURI(url);
+	this.linkFromURL = function (url, sourceItemID, mimeType, title) {
+		Zotero.debug('Linking attachment from <' + url + '>');
 		
 		// If no title provided, figure it out from the URL
 		// Web addresses with paths will be whittled to the last element

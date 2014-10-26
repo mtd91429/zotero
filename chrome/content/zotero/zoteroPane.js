@@ -3032,13 +3032,10 @@ var ZoteroPane = new function()
 			this.displayCannotEditLibraryMessage();
 			return;
 		}
-		//Get the string "Attach Link to File…" from zotero.dtd to pass into the new dialog
-		var linkFileMenuElement = document.getElementsByClassName("menuitem-iconic zotero-menuitem-attachments-link");
-		var message = {linkFileMessage: linkFileMenuElement[0].getAttribute("label")};
-
-		var io = { in: {itemID: itemID}, out: null};
+		
+		var io = {};
 		window.openDialog('chrome://zotero/content/attachLink.xul', 
-			'zotero-attach-uri-dialog', 'centerscreen, modal', io, message);
+			'zotero-attach-uri-dialog', 'centerscreen, modal', io);
 		if (io.out) {
 			Zotero.Attachments.linkFromURL(io.out.link, itemID, null, io.out.title);
 		}

@@ -8,7 +8,6 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons="accept,cancel"
 	ondialogaccept="return Zotero_AttachLink.submit();"
-	ondialogcancel="return Zotero_AttachLink.cancel();"
 	
 	id="zotero-attach-uri-dialog"
 	title="&zotero.attachLink.title;"
@@ -17,15 +16,15 @@
 	<script src="include.js"/>
 	<script src="AttachLink.js"/>
 	
-	<vbox id="zotero-attach-uri-container" pack="center">
-		<hbox pack="center" flex="1">
-			<description id="zotero-attach-uri-message"></description>
+	<vbox id="zotero-attach-uri-container">
+		<hbox>
+			<description id="zotero-attach-uri-message" class="zotero-message-error"></description>
 		</hbox>
-		<hbox pack="center" flex="1">
+		<hbox>
 			<label id="zotero-attach-uri-label-input" value="&zotero.attachLink.label.link;" control="zotero-attach-uri-input"></label>
 			<textbox id="zotero-attach-uri-input" flex="1"/>
 		</hbox>
-		<hbox pack="center" flex="1">
+		<hbox>
 			<label id="zotero-attach-uri-label-title" value="&zotero.attachLink.label.title;" control="zotero-attach-uri-title"></label>
 			<textbox id="zotero-attach-uri-title" flex="1" placeholder="&zotero.general.optional;"/>
 		</hbox>
